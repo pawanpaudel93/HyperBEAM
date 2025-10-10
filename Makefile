@@ -51,6 +51,10 @@ $(WAMR_DIR):
 
 $(WAMR_DIR)/lib/libvmlib.a: $(WAMR_DIR)
 	sed -i '742a tbl_inst->is_table64 = 1;' ./_build/wamr/core/iwasm/aot/aot_runtime.c; \
+	find $(WAMR_DIR) -type f \( -name "*.cmake" -o -name "CMakeLists.txt" \) -exec sed -i 's/-mindirect-branch-register//g' {} +; \
+	find $(WAMR_DIR) -type f \( -name "*.cmake" -o -name "CMakeLists.txt" \) -exec sed -i 's/-mindirect-branch=thunk-extern//g' {} +; \
+	sed -i 's/\bMAP_32BIT\b/MMAP_MAP_32BIT/g' $(WAMR_DIR)/core/shared/platform/common/posix/posix_memmap.c; \
+	find $(WAMR_DIR) -name "*.s" -exec sed -i 's/\.type\s\+\([^,]*\),\s*@function/.type \1, %function/g' {} +; \
 	cmake \
 		$(WAMR_FLAGS) \
 		-S $(WAMR_DIR) \
@@ -71,7 +75,16 @@ $(WAMR_DIR)/lib/libvmlib.a: $(WAMR_DIR)
         -DWAMR_BUILD_TAIL_CALL=1 \
         -DWAMR_BUILD_AOT_STACK_FRAME=1 \
         -DWAMR_BUILD_MEMORY_PROFILING=1 \
-        -DWAMR_BUILD_DUMP_CALL_STACK=1
+        -DWAMR_BUILD_DUMP_CALL_STACK=1 \
+		-DWAMR_BUILD_SIMD=0 \
+		-DWAMR_BUILD_INVOKE_NATIVE_GENERAL=1 \
+		-DTHREADS_PREFER_PTHREAD_FLAG=ON \
+		-DCMAKE_THREAD_LIBS_INIT="-lpthread" \
+		-DCMAKE_HAVE_THREADS_LIBRARY=1 \
+		-DCMAKE_USE_PTHREADS_INIT=1 \
+		-DWAMR_BUILD_SPEC_TEST=0 \
+		-DCMAKE_C_FLAGS="-O2" \
+		-DCMAKE_CXX_FLAGS="-O2"
 	make -C $(WAMR_DIR)/lib -j8
 
 clean:

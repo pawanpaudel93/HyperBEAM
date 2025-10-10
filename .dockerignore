@@ -1,0 +1,46 @@
+# Build artifacts that should not be copied to Docker (built fresh in container)
+_build
+_checkouts
+_vendor
+.rebar3
+.rebar
+ebin
+*.beam
+*.o
+*.d
+
+# Cache directories
+cache-*
+data
+
+# Logs and crashes
+logs
+log
+erl_crash.dump
+rebar3.crashdump
+
+# Development files
+.git
+.gitignore
+.idea
+*.iml
+*.swp
+*.swo
+.DS_STORE
+.vscode
+*~
+
+# Documentation (except DOCKER.md and DEVICES.md)
+docs
+mkdocs-site
+mkdocs-site-id.txt
+mkdocs-site-manifest.csv
+!DOCKER.md
+!DEVICES.md
+
+# Other
+*.dot
+*.svg
+cu/
+venv/
+priv/

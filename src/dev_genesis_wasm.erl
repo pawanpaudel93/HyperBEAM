@@ -125,7 +125,7 @@ ensure_started(Opts) ->
                     ),
                 case filelib:is_dir(DevPath) of
                     true -> DevPath;
-                    false -> filename:join([Cwd, "genesis-wasm-server"]) % Fallback
+                    false -> filename:join([Cwd, "_build/genesis-wasm-server"]) % Fallback
                 end
         end,
     ?event({ensure_started, genesis_wasm_server_dir, GenesisWasmServerDir}),
