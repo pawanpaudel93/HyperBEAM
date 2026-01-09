@@ -1,4 +1,2 @@
 port: 10000
-% Configure to use the mounted volume for better resource management
-% Note: HB_STORE environment variable will override this if set
 mode: prod
