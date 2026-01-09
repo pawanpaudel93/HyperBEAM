@@ -67,4 +67,20 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 COPY --from=builder /opt/_build/ /opt/_build/
 
 # bin bash here to start the container
+#ENTRYPOINT ["/opt/_build/genesis_wasm/rel/hb/bin/hb"]
+
+# Create directories on the /ar.io volume for HyperBEAM data
+RUN mkdir -p /ar.io/hyperbeam-data /ar.io/tmp
+
+# Set environment variables to use the /ar.io volume instead of system directories
+ENV HB_STORE=/ar.io/hyperbeam-data
+ENV TMPDIR=/ar.io/tmp
+ENV TMP=/ar.io/tmp
+ENV TEMP=/ar.io/tmp
+
+# Copy and setup the startup script
+COPY hyperbeam-setup.sh /usr/local/bin/hyperbeam-setup.sh
+RUN chmod +x /usr/local/bin/hyperbeam-setup.sh
+RUN hyperbeam-setup.sh
+
 ENTRYPOINT ["/opt/_build/genesis_wasm/rel/hb/bin/hb"]
